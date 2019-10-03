@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
-import ReactTable from 'react-table';
 import './App.css';
 
 import Table from "./Table.js";
-
-import 'react-table/react-table.css'
 
 function Body(props) {
 
@@ -23,11 +20,16 @@ function Body(props) {
         matrix = Object.keys(source).map(vertex => {
             let columns = source[vertex];
             return Object.keys(source).map(v => {
-                if (columns.indexOf(v) !== -1) {
-                    return 1;
-                } else {
-                    return 0;
+                let vertexCoefficient = 0;
+                let lastIndexOf = columns.lastIndexOf(v);
+                let currentIndexOf = columns.indexOf(v);
+                while (lastIndexOf !== currentIndexOf) {
+                    vertexCoefficient++;
+                    currentIndexOf = columns.indexOf(v, currentIndexOf + 1);
                 }
+                if (columns.lastIndexOf(v) !== -1)
+                    vertexCoefficient++;
+                return vertexCoefficient;
             });
         });
         setAdjacencyMatrix(matrix);
@@ -39,6 +41,7 @@ function Body(props) {
             for(let j = i + 1; j < matrix.length; j++)
                 if (matrix[i][j] !== matrix[j][i])
                     isGraphOriented = true;
+
 
         //edges counting
         let edges = 0;
@@ -71,11 +74,9 @@ function Body(props) {
             for(let i = 0; i < matrix.length; i++) {
                 for(let j = i; j < matrix.length; j++) {
                     if(matrix[i][j]) {
-                        if (i === j) {
-                            incidenceMatrix[i][k] = 1;
-                        } else {
-                            incidenceMatrix[i][k] = 1;
-                            incidenceMatrix[j][k] = 1;
+                        incidenceMatrix[i][k] = matrix[i][j];
+                        if (i !== j) {
+                            incidenceMatrix[j][k] = matrix[i][j];
                         }
                         k++;
                     }
@@ -86,10 +87,10 @@ function Body(props) {
                 for(let j = 0; j < matrix.length; j++) {
                     if(matrix[i][j]) {
                         if (i === j) {
-                            incidenceMatrix[i][k] = 1;
+                            incidenceMatrix[i][k] = matrix[i][j];
                         } else {
-                            incidenceMatrix[i][k] = -1;
-                            incidenceMatrix[j][k] = 1;
+                            incidenceMatrix[i][k] = -matrix[i][j];
+                            incidenceMatrix[j][k] = matrix[i][j];
                         }
                         k++;
                     }

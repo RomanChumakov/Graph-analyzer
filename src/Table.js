@@ -1,8 +1,5 @@
 import React from 'react';
-import ReactTable from 'react-table';
 import './App.css';
-
-import 'react-table/react-table.css'
 
 function Table(props) {
 
