@@ -3,7 +3,7 @@ export const getGraphOrientation = (adjacencyMartix) => {
         for(let j = i + 1; j < adjacencyMartix.length; j++)
             if (adjacencyMartix[i][j] !== adjacencyMartix[j][i])
                 return true;
-}
+};
 
 export const getEdgesNumber = (adjacencyMartix, isGraphOriented) => {
     let edges = 0;
@@ -19,7 +19,7 @@ export const getEdgesNumber = (adjacencyMartix, isGraphOriented) => {
                     edges++;
     }
     return edges;
-}
+};
 
 export const getAdjacencyMatrixByConnectivityList = (connectivityList) => {
     let adjacencyMatrix = [];
@@ -39,7 +39,7 @@ export const getAdjacencyMatrixByConnectivityList = (connectivityList) => {
         });
     });
     return adjacencyMatrix;
-}
+};
 
 export const getIncidenceMatrixByAdjacencyMatrix = (adjacencyMatrix, edgesNumber, isGraphOriented) => {
     let incidenceMatrix = [];
@@ -82,7 +82,7 @@ export const getIncidenceMatrixByAdjacencyMatrix = (adjacencyMatrix, edgesNumber
         }
     }
     return incidenceMatrix;
-}
+};
 
 export const getDegreesVector = (adjacencyMatrix, incidenceMatrix, coefficient) => {
     let degreesVector = [];
@@ -102,4 +102,44 @@ export const getDegreesVector = (adjacencyMatrix, incidenceMatrix, coefficient) 
         }
     }
     return degreesVector;
-}
+};
+
+export const getGraphMultiness = (adjacencyMatrix) => {
+    let isMultigraph = false;
+    for(let i = 0; i < adjacencyMatrix.length; i++) {
+        for(let j = 0; j < adjacencyMatrix.length; j++) {
+            if(adjacencyMatrix[i][j] > 1 || (adjacencyMatrix[i][j] === 1 && i === j)) {
+                isMultigraph = true;
+            }
+        }
+    }
+    return isMultigraph;
+};
+
+export const getGraphFaked = (adjacencyMatrix) => {
+    let isGraphFaked = false;
+    for(let i = 0; i < adjacencyMatrix.length; i++) {
+        for(let j = 0; j < adjacencyMatrix.length; j++) {
+            if(adjacencyMatrix[i][j] === 1 && i === j) {
+                isGraphFaked = true;
+            }
+        }
+    }
+    return isGraphFaked;
+};
+
+export const getLeafVector = (degreesVector1, degreesVector2) => {
+    let leafVector = [];
+    if (degreesVector2 === undefined) {
+        degreesVector1.map((deg, i) => {
+            if (deg === 1)
+                leafVector.push(i + 1);
+        });
+    } else {
+        degreesVector1.map((deg, i) => {
+            if (deg + degreesVector2[i] === 1)
+                leafVector.push(i + 1);
+        });
+    }
+    return leafVector;
+};

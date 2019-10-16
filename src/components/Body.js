@@ -6,13 +6,18 @@ import {
     getIncidenceMatrixByAdjacencyMatrix,
     getDegreesVector,
     getGraphOrientation,
-    getEdgesNumber
+    getEdgesNumber,
+    getGraphMultiness,
+    getGraphFaked,
+    getLeafVector
 } from "./usefulFunctions";
 
 function Body(props) {
 
     const [isResultsNeedToRender, setIsResultsNeedToRender] = useState(false);
     const [isGraphOriented, setIsGraphOriented] = useState(false);
+    const [isMultigraph, setIsMultigraph] = useState(false);
+    const [isGraphFaked, setIsGraphFaked] = useState(false);
 
     const [adjacencyMatrix, setAdjacencyMatrix] = useState([]);
     const [incidenceMatrix, setIncidenceMatrix] = useState([]);
@@ -20,6 +25,7 @@ function Body(props) {
     const [degreesVector, setDegreesVector] = useState([]);
     const [approachHalfDegreesVector, setApproachHalfDegreesVector] = useState([]);
     const [outcomeHalfDegreesVector, setOutcomeHalfDegreesVector] = useState([]);
+    const [leafVector, setLeafVector] = useState([]);
 
     const handleInputClick = e => {
         setIsResultsNeedToRender(true);
@@ -36,12 +42,17 @@ function Body(props) {
         let degreesVector = [];
         let outcomeHalfDegreesVector = [];
         let approachHalfDegreesVector = [];
+        let isMultigraph = getGraphMultiness(adjacencyMatrix);
+        let isGraphFaked = getGraphFaked(adjacencyMatrix);
+        let leafs = [];
 
         if (!isGraphOriented) {
             degreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
+            leafs = getLeafVector(degreesVector);
         } else {
             outcomeHalfDegreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, -1);
             approachHalfDegreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
+            leafs = getLeafVector(outcomeHalfDegreesVector, approachHalfDegreesVector);
         }
 
         setIsGraphOriented(isGraphOriented);
@@ -50,6 +61,10 @@ function Body(props) {
         setOutcomeHalfDegreesVector(outcomeHalfDegreesVector);
         setApproachHalfDegreesVector(approachHalfDegreesVector);
         setDegreesVector(degreesVector);
+        setIsMultigraph(isMultigraph);
+        setIsGraphFaked(isGraphFaked);
+        setLeafVector(leafs);
+
     }
 
     return (
@@ -85,11 +100,16 @@ function Body(props) {
                     {
                         isGraphOriented
                         ? <div>
-                            <p>{`Вектор полустепеней исхода ${outcomeHalfDegreesVector}`}</p>
-                            <p>{`Вектор полустепеней захода ${approachHalfDegreesVector}`}</p>
+                            <p>{`Вектор полустепеней исхода: ${outcomeHalfDegreesVector}`}</p>
+                            <p>{`Вектор полустепеней захода: ${approachHalfDegreesVector}`}</p>
                         </div>
-                        : <p>{`Вектор степеней ${degreesVector}`}</p>
+                        : <div>
+                            <p>{`Вектор степеней ${degreesVector}`}</p>
+                        </div>
                     }
+                    <p>{`Вектор висячих вершин: ${leafVector}`}</p>
+                    <p>{`Наличие кратных рёбер: ${isMultigraph ? "да" : "нет"}`}</p>
+                    <p>{`Наличие петель: ${isGraphFaked ? "да" : "нет"}`}</p>
                     </div>
                 </div>
                 <svg
