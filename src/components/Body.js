@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Graph from "react-graph-vis";
 
 import Table from "./Table.js";
 import {
@@ -11,8 +12,11 @@ import {
     getGraphFaked,
     getLeafVector,
     getRouteMatrix,
-    getEnclosureRouteMatrix
+    getEnclosureRouteMatrix,
+    getGraphByConnectivityList
 } from "./usefulFunctions";
+
+// import "react-graph-vis/dist/network.css";
 
 function Body(props) {
 
@@ -31,6 +35,32 @@ function Body(props) {
     const [approachHalfDegreesVector, setApproachHalfDegreesVector] = useState([]);
     const [outcomeHalfDegreesVector, setOutcomeHalfDegreesVector] = useState([]);
     const [leafVector, setLeafVector] = useState([]);
+
+    const [graph, setGraph] = useState({
+        nodes: [
+            { id: 1, label: "A", color: "#00e1ff" },
+            { id: 2, label: "B", color: "#00e1ff" },
+            { id: 3, label: "C", color: "#00e1ff" }
+        ],
+        edges: [
+            { from: 1, to: 2 },
+            { from: 2, to: 1 },
+            { from: 1, to: 3 },
+            { from: 3, to: 1 },
+            { from: 2, to: 3 },
+            { from: 3, to: 2 }
+        ]
+    });
+    const [options, setOptions] = useState({
+        layout: {
+            hierarchical: false
+        },
+        edges: {
+            color: "#7300ff"
+        },
+        height: "250px",
+        width: "250px",
+    });
 
     const handleInputClick = e => {
         setIsResultsNeedToRender(true);
@@ -54,6 +84,7 @@ function Body(props) {
         let leafs = [];
         let rMatrix = getRouteMatrix(adjacencyMatrix, routeLength);
         let erMatrix = getEnclosureRouteMatrix(adjacencyMatrix, routeLength);
+        let graph = getGraphByConnectivityList(source);
 
         if (!isGraphOriented) {
             degreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
@@ -76,12 +107,15 @@ function Body(props) {
         setLeafVector(leafs);
         setRouteMatrix(rMatrix);
         setEnclosureRouteMatrix(erMatrix);
+        setGraph(graph);
 
     }
 
     return (
         <div className="main-container">
-            <img src="example.png" height="100" width="100"/>
+            <div style = {{height: "250px", width: "250px", marginTop: "10px"}}>
+                <Graph graph={graph} options={options}/>
+            </div>
             <label className="last">{`Формат ввода: {"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]}`}</label>
             <input type="text" id="data" className="input-item data-container" placeholder="Введите список смежности"/>
             <input type="text" id="len" className="input-item data-container" placeholder="Введите длину пути"/>
@@ -127,16 +161,6 @@ function Body(props) {
                     <p>{`Наличие петель: ${isGraphFaked ? "да" : "нет"}`}</p>
                     </div>
                 </div>
-                <svg
-                    height="150"
-                    width="150"
-                    style={{
-                        backgroundColor: "lightGray",
-                        margin: "10px"
-                    }}
-                >
-                    <line x1="0" y1="0" x2="50" y2="50" stroke="black"/>
-                </svg>
             </div>
         </div>
     );

@@ -192,3 +192,13 @@ export const getEnclosureRouteMatrix = (matrix, n) => {
     }
     return routeMatrix;
 };
+
+export const getGraphByConnectivityList = (connectivityList) => {
+    let nodes = [];
+    let edges = [];
+    Object.keys(connectivityList).map((vertex, i) => {
+        nodes.push({id: i, label: vertex, color: "#00e1ff"});
+        connectivityList[vertex].map(aimVertex => edges.push({from: i, to: Object.keys(connectivityList).indexOf(aimVertex)}));
+    });
+    return {nodes: nodes, edges: edges};
+};
