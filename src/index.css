@@ -31,6 +31,10 @@ code {
     margin-bottom: 40px;
 }
 
+.not-last {
+    margin-bottom: 10px;
+}
+
 .data-container {
     width: 300px;
     text-align: center;

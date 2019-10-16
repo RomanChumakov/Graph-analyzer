@@ -9,7 +9,9 @@ import {
     getEdgesNumber,
     getGraphMultiness,
     getGraphFaked,
-    getLeafVector
+    getLeafVector,
+    getRouteMatrix,
+    getEnclosureRouteMatrix
 } from "./usefulFunctions";
 
 function Body(props) {
@@ -18,9 +20,12 @@ function Body(props) {
     const [isGraphOriented, setIsGraphOriented] = useState(false);
     const [isMultigraph, setIsMultigraph] = useState(false);
     const [isGraphFaked, setIsGraphFaked] = useState(false);
+    const [routeLength, setRouteLength] = useState(0);
 
     const [adjacencyMatrix, setAdjacencyMatrix] = useState([]);
     const [incidenceMatrix, setIncidenceMatrix] = useState([]);
+    const [routeMatrix, setRouteMatrix] = useState([]);
+    const [enclosureRouteMatrix, setEnclosureRouteMatrix] = useState([]);
 
     const [degreesVector, setDegreesVector] = useState([]);
     const [approachHalfDegreesVector, setApproachHalfDegreesVector] = useState([]);
@@ -35,6 +40,8 @@ function Body(props) {
             source = JSON.parse(document.getElementById("data").value);
         }
 
+        let routeLength = parseInt(document.getElementById("len").value);
+
         let adjacencyMatrix = getAdjacencyMatrixByConnectivityList(source);
         let isGraphOriented = getGraphOrientation(adjacencyMatrix);
         let edgesNumber = getEdgesNumber(adjacencyMatrix, isGraphOriented);
@@ -45,6 +52,8 @@ function Body(props) {
         let isMultigraph = getGraphMultiness(adjacencyMatrix);
         let isGraphFaked = getGraphFaked(adjacencyMatrix);
         let leafs = [];
+        let rMatrix = getRouteMatrix(adjacencyMatrix, routeLength);
+        let erMatrix = getEnclosureRouteMatrix(adjacencyMatrix, routeLength);
 
         if (!isGraphOriented) {
             degreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
@@ -55,6 +64,7 @@ function Body(props) {
             leafs = getLeafVector(outcomeHalfDegreesVector, approachHalfDegreesVector);
         }
 
+        setRouteLength(routeLength);
         setIsGraphOriented(isGraphOriented);
         setIncidenceMatrix(incidenceMatrix);
         setAdjacencyMatrix(adjacencyMatrix);
@@ -64,6 +74,8 @@ function Body(props) {
         setIsMultigraph(isMultigraph);
         setIsGraphFaked(isGraphFaked);
         setLeafVector(leafs);
+        setRouteMatrix(rMatrix);
+        setEnclosureRouteMatrix(erMatrix);
 
     }
 
@@ -72,6 +84,7 @@ function Body(props) {
             <img src="example.png" height="100" width="100"/>
             <label className="last">{`Формат ввода: {"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]}`}</label>
             <input type="text" id="data" className="input-item data-container" placeholder="Введите список смежности"/>
+            <input type="text" id="len" className="input-item data-container" placeholder="Введите длину пути"/>
             <input
                 type="button"
                 className="input-item last"
@@ -91,6 +104,8 @@ function Body(props) {
                 >
                     <Table title={`Матрица смежности`} data={adjacencyMatrix}/>
                     <Table title={`Матрица инцидентности`} data={incidenceMatrix}/>
+                    <Table title={`Матрица маршрутов длины ${routeLength}`} data={routeMatrix}/>
+                    <Table title={`Матрица замкнутых маршрутов длины ${routeLength}`} data={enclosureRouteMatrix}/>
                     <div
                         style = {{
                             padding: "5px",
