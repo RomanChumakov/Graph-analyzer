@@ -1,0 +1,23 @@
+export const ru = {
+    syntaxDataError: "Синтаксическая ошибка во вводе данных!",
+    syntaxRouteLengthError: "Длина маршрута должна быть числом!",
+    routeLengthBelowZeroError: "Длина маршрута должна быть положительным числом!",
+    routeLengthMoreThen20Error: "Максимальная длина маршрута 20!",
+    inputFormat: "Формат ввода:",
+    enterAdjacencyList: "Введите список смежности",
+    enterRouteLength: "Введите длину пути",
+    getResult: "Получить результат",
+    adjacencyMatrix: "Матрица смежности",
+    incidenceMatrix: "Матрица инцидентности",
+    routeLengthMatrix: "Матрица маршрутов длины",
+    enclosedRouteLengthMatrix: "Матрица замкнутых маршрутов длины",
+    outcomeHalfDegreesVector: "Вектор полустепеней исхода:",
+    approachHalfDegreesVector: "Вектор полустепеней захода:",
+    degreesVector: "Вектор степеней:",
+    leafVector: "Вектор висячих вершин:",
+    emptyLeafVector: "пуст",
+    multipleEdgesExistence: "Наличие кратных рёбер:",
+    loopExistence: "Наличие петель:",
+    yes: "да",
+    no: "нет"
+};

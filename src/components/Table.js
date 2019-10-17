@@ -4,7 +4,7 @@ function Table(props) {
     return (
         <div
             style = {{
-                border: "1px solid black",
+                border: "1px solid silver",
                 marginTop: "5px",
                 padding: "5px",
                 paddingLeft: "15px",

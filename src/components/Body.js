@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import Graph from "react-graph-vis";
+import {ru as lang} from "../languages/russian";
+// import {en as lang} from "../languages/english";
 
 import Table from "./Table.js";
 import {
@@ -69,7 +71,7 @@ function Body(props) {
             try {
                 source = JSON.parse(document.getElementById("data").value);
             } catch (e) {
-                alert("Синтаксическая ошибка во вводе данных!");
+                alert(lang.syntaxDataError);
                 return undefined;
             }
         }
@@ -77,15 +79,15 @@ function Body(props) {
         let routeLength = parseInt(document.getElementById("len").value);
 
         if (isNaN(routeLength)) {
-            alert("Длина маршрута должна быть числом!");
+            alert(lang.syntaxRouteLengthError);
             return undefined;
         }
         if (routeLength < 1) {
-            alert("Длина маршрута должна быть положительным числом!");
+            alert(lang.routeLengthBelowZeroError);
             return undefined;
         }
         if (routeLength > 20) {
-            alert("Максимальная длина маршрута 20!");
+            alert(lang.routeLengthMoreThen20Error);
             return undefined;
         }
 
@@ -135,49 +137,47 @@ function Body(props) {
             <div style = {{height: "250px", width: "250px", marginTop: "10px"}}>
                 <Graph graph={graph} options={options}/>
             </div>
-            <label className="last">{`Формат ввода: {"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]}`}</label>
-            <input type="text" id="data" className="input-item data-container" placeholder="Введите список смежности"/>
-            <input type="text" id="len" className="input-item data-container" placeholder="Введите длину пути"/>
+            <label className="last">{`${lang.inputFormat} {"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]}`}</label>
+            <input type="text" id="data" className="input-item data-container" placeholder={lang.enterAdjacencyList}/>
+            <input type="text" id="len" className="input-item data-container" placeholder={lang.enterRouteLength}/>
             <input
                 type="button"
                 className="input-item last"
-                value="Получить результат"
+                value={lang.getResult}
                 onClick={handleInputClick}
             />
-            <div
-                style={{
-                    borderTop: "1px solid black"
-                }}
-            >
+            <div>
                 <div
                     style = {{
                         display: isResultsNeedToRender ? "flex" : "none",
-                        flexDirectiom: "row"
+                        flexDirection: "row",
+                        flexWrap: "wrap"
                     }}
                 >
-                    <Table title={`Матрица смежности`} data={adjacencyMatrix}/>
-                    <Table title={`Матрица инцидентности`} data={incidenceMatrix}/>
-                    <Table title={`Матрица маршрутов длины ${routeLength}`} data={routeMatrix}/>
-                    <Table title={`Матрица замкнутых маршрутов длины ${routeLength}`} data={enclosureRouteMatrix}/>
+                    <Table title={lang.adjacencyMatrix} data={adjacencyMatrix}/>
+                    <Table title={lang.incidenceMatrix} data={incidenceMatrix}/>
+                    <Table title={`${lang.routeLengthMatrix} ${routeLength}`} data={routeMatrix}/>
+                    <Table title={`${lang.enclosedRouteLengthMatrix} ${routeLength}`} data={enclosureRouteMatrix}/>
                     <div
                         style = {{
                             padding: "5px",
-                            border: "1px solid black"
+                            border: "1px solid silver",
+                            marginTop: "5px"
                         }}
                     >
                     {
                         isGraphOriented
                         ? <div>
-                            <p>{`Вектор полустепеней исхода: ${outcomeHalfDegreesVector}`}</p>
-                            <p>{`Вектор полустепеней захода: ${approachHalfDegreesVector}`}</p>
+                            <p>{`${lang.outcomeHalfDegreesVector} ${outcomeHalfDegreesVector}`}</p>
+                            <p>{`${lang.approachHalfDegreesVector} ${approachHalfDegreesVector}`}</p>
                         </div>
                         : <div>
-                            <p>{`Вектор степеней ${degreesVector}`}</p>
+                            <p>{`${lang.degreesVector} ${degreesVector}`}</p>
                         </div>
                     }
-                    <p>{`Вектор висячих вершин: ${leafVector}`}</p>
-                    <p>{`Наличие кратных рёбер: ${isMultigraph ? "да" : "нет"}`}</p>
-                    <p>{`Наличие петель: ${isGraphFaked ? "да" : "нет"}`}</p>
+                        <p>{`${lang.leafVector} ${leafVector.length > 0 ? leafVector : lang.emptyLeafVector}`}</p>
+                        <p>{`${lang.multipleEdgesExistence} ${isMultigraph ? lang.yes : lang.no}`}</p>
+                        <p>{`${lang.loopExistence} ${isGraphFaked ? lang.yes : lang.no}`}</p>
                     </div>
                 </div>
             </div>
