@@ -63,14 +63,33 @@ function Body(props) {
     });
 
     const handleInputClick = e => {
-        setIsResultsNeedToRender(true);
 
         let source = "";
         if (document.getElementById("data").value !== "") {
-            source = JSON.parse(document.getElementById("data").value);
+            try {
+                source = JSON.parse(document.getElementById("data").value);
+            } catch (e) {
+                alert("Синтаксическая ошибка во вводе данных!");
+                return undefined;
+            }
         }
 
         let routeLength = parseInt(document.getElementById("len").value);
+
+        if (isNaN(routeLength)) {
+            alert("Длина маршрута должна быть числом!");
+            return undefined;
+        }
+        if (routeLength < 1) {
+            alert("Длина маршрута должна быть положительным числом!");
+            return undefined;
+        }
+        if (routeLength > 20) {
+            alert("Максимальная длина маршрута 20!");
+            return undefined;
+        }
+
+        setIsResultsNeedToRender(true);
 
         let adjacencyMatrix = getAdjacencyMatrixByConnectivityList(source);
         let isGraphOriented = getGraphOrientation(adjacencyMatrix);
