@@ -5,37 +5,35 @@ import {ru as lang} from "../languages/russian";
 
 import Table from "./Table.js";
 import {
-    getAdjacencyMatrixByConnectivityList,
+    getAdjacencyMatrixByAdjacencyList,
     getIncidenceMatrixByAdjacencyMatrix,
-    getDegreesVector,
+    getDegreeVector,
     getGraphOrientation,
-    getEdgesNumber,
+    getEdgeNumber,
     getGraphMultiness,
     getGraphFaked,
     getLeafVector,
-    getRouteMatrix,
-    getEnclosureRouteMatrix,
-    getGraphByConnectivityList
+    getDistanceMatrix,
+    getEnclosedDistanceMatrix,
+    getGraphByAdjacencyList
 } from "./usefulFunctions";
-
-// import "react-graph-vis/dist/network.css";
 
 function Body(props) {
 
-    const [isResultsNeedToRender, setIsResultsNeedToRender] = useState(false);
+    const [shouldResultsRender, setShouldResultsRender] = useState(false);
     const [isGraphOriented, setIsGraphOriented] = useState(false);
     const [isMultigraph, setIsMultigraph] = useState(false);
     const [isGraphFaked, setIsGraphFaked] = useState(false);
-    const [routeLength, setRouteLength] = useState(0);
+    const [distanceLength, setDistanceLength] = useState(0);
 
     const [adjacencyMatrix, setAdjacencyMatrix] = useState([]);
     const [incidenceMatrix, setIncidenceMatrix] = useState([]);
-    const [routeMatrix, setRouteMatrix] = useState([]);
-    const [enclosureRouteMatrix, setEnclosureRouteMatrix] = useState([]);
+    const [distanceMatrix, setDistanceMatrix] = useState([]);
+    const [enclosedDistanceMatrix, setEnclosedDistanceMatrix] = useState([]);
 
-    const [degreesVector, setDegreesVector] = useState([]);
-    const [approachHalfDegreesVector, setApproachHalfDegreesVector] = useState([]);
-    const [outcomeHalfDegreesVector, setOutcomeHalfDegreesVector] = useState([]);
+    const [degreeVector, setDegreeVector] = useState([]);
+    const [inDegreeVector, setInDegreeVector] = useState([]);
+    const [outDegreeVector, setOutDegreeVector] = useState([]);
     const [leafVector, setLeafVector] = useState([]);
 
     const [graph, setGraph] = useState({
@@ -76,58 +74,58 @@ function Body(props) {
             }
         }
 
-        let routeLength = parseInt(document.getElementById("len").value);
+        let distanceLength = parseInt(document.getElementById("distance-length").value);
 
-        if (isNaN(routeLength)) {
-            alert(lang.syntaxRouteLengthError);
+        if (isNaN(distanceLength)) {
+            alert(lang.syntaxDistanceLengthError);
             return undefined;
         }
-        if (routeLength < 1) {
-            alert(lang.routeLengthBelowZeroError);
+        if (distanceLength < 1) {
+            alert(lang.distanceLengthBelowZeroError);
             return undefined;
         }
-        if (routeLength > 20) {
-            alert(lang.routeLengthMoreThen20Error);
+        if (distanceLength > 20) {
+            alert(lang.distanceLengthMoreThenTwentyError);
             return undefined;
         }
 
-        setIsResultsNeedToRender(true);
+        setShouldResultsRender(true);
 
-        let adjacencyMatrix = getAdjacencyMatrixByConnectivityList(source);
+        let adjacencyMatrix = getAdjacencyMatrixByAdjacencyList(source);
         let isGraphOriented = getGraphOrientation(adjacencyMatrix);
-        let edgesNumber = getEdgesNumber(adjacencyMatrix, isGraphOriented);
-        let incidenceMatrix = getIncidenceMatrixByAdjacencyMatrix(adjacencyMatrix, edgesNumber, isGraphOriented);
-        let degreesVector = [];
-        let outcomeHalfDegreesVector = [];
-        let approachHalfDegreesVector = [];
+        let edgeNumber = getEdgeNumber(adjacencyMatrix, isGraphOriented);
+        let incidenceMatrix = getIncidenceMatrixByAdjacencyMatrix(adjacencyMatrix, edgeNumber, isGraphOriented);
+        let degreeVector = [];
+        let outDegreeVector = [];
+        let inDegreeVector = [];
         let isMultigraph = getGraphMultiness(adjacencyMatrix);
         let isGraphFaked = getGraphFaked(adjacencyMatrix);
-        let leafs = [];
-        let rMatrix = getRouteMatrix(adjacencyMatrix, routeLength);
-        let erMatrix = getEnclosureRouteMatrix(adjacencyMatrix, routeLength);
-        let graph = getGraphByConnectivityList(source);
+        let leafVector = [];
+        let distanceMatrix = getDistanceMatrix(adjacencyMatrix, distanceLength);
+        let enclosedDistanceMatrix = getEnclosedDistanceMatrix(adjacencyMatrix, distanceLength);
+        let graph = getGraphByAdjacencyList(source);
 
         if (!isGraphOriented) {
-            degreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
-            leafs = getLeafVector(degreesVector);
+            degreeVector = getDegreeVector(adjacencyMatrix, incidenceMatrix, 1);
+            leafVector = getLeafVector(degreeVector);
         } else {
-            outcomeHalfDegreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, -1);
-            approachHalfDegreesVector = getDegreesVector(adjacencyMatrix, incidenceMatrix, 1);
-            leafs = getLeafVector(outcomeHalfDegreesVector, approachHalfDegreesVector);
+            outDegreeVector = getDegreeVector(adjacencyMatrix, incidenceMatrix, -1);
+            inDegreeVector = getDegreeVector(adjacencyMatrix, incidenceMatrix, 1);
+            leafVector = getLeafVector(outDegreeVector, inDegreeVector);
         }
 
-        setRouteLength(routeLength);
+        setDistanceLength(distanceLength);
         setIsGraphOriented(isGraphOriented);
         setIncidenceMatrix(incidenceMatrix);
         setAdjacencyMatrix(adjacencyMatrix);
-        setOutcomeHalfDegreesVector(outcomeHalfDegreesVector);
-        setApproachHalfDegreesVector(approachHalfDegreesVector);
-        setDegreesVector(degreesVector);
+        setOutDegreeVector(outDegreeVector);
+        setInDegreeVector(inDegreeVector);
+        setDegreeVector(degreeVector);
         setIsMultigraph(isMultigraph);
         setIsGraphFaked(isGraphFaked);
-        setLeafVector(leafs);
-        setRouteMatrix(rMatrix);
-        setEnclosureRouteMatrix(erMatrix);
+        setLeafVector(leafVector);
+        setDistanceMatrix(distanceMatrix);
+        setEnclosedDistanceMatrix(enclosedDistanceMatrix);
         setGraph(graph);
 
     }
@@ -139,25 +137,25 @@ function Body(props) {
             </div>
             <label className="last">{`${lang.inputFormat} {"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]}`}</label>
             <input type="text" id="data" className="input-item data-container" placeholder={lang.enterAdjacencyList}/>
-            <input type="text" id="len" className="input-item data-container" placeholder={lang.enterRouteLength}/>
+            <input type="text" id="distance-length" className="input-item data-container" placeholder={lang.enterDistanceLength}/>
             <input
                 type="button"
                 className="input-item last"
-                value={lang.getResult}
+                value={lang.getResults}
                 onClick={handleInputClick}
             />
             <div>
                 <div
                     style = {{
-                        display: isResultsNeedToRender ? "flex" : "none",
+                        display: shouldResultsRender ? "flex" : "none",
                         flexDirection: "row",
                         flexWrap: "wrap"
                     }}
                 >
                     <Table title={lang.adjacencyMatrix} data={adjacencyMatrix}/>
                     <Table title={lang.incidenceMatrix} data={incidenceMatrix}/>
-                    <Table title={`${lang.routeLengthMatrix} ${routeLength}`} data={routeMatrix}/>
-                    <Table title={`${lang.enclosedRouteLengthMatrix} ${routeLength}`} data={enclosureRouteMatrix}/>
+                    <Table title={`${lang.distanceLengthMatrix} ${distanceLength}`} data={distanceMatrix}/>
+                    <Table title={`${lang.enclosedDistanceLengthMatrix} ${distanceLength}`} data={enclosedDistanceMatrix}/>
                     <div
                         style = {{
                             padding: "5px",
@@ -168,16 +166,16 @@ function Body(props) {
                     {
                         isGraphOriented
                         ? <div>
-                            <p>{`${lang.outcomeHalfDegreesVector} ${outcomeHalfDegreesVector}`}</p>
-                            <p>{`${lang.approachHalfDegreesVector} ${approachHalfDegreesVector}`}</p>
+                            <p>{`${lang.outDegreeVector} ${outDegreeVector}`}</p>
+                            <p>{`${lang.inDegreeVector} ${inDegreeVector}`}</p>
                         </div>
                         : <div>
-                            <p>{`${lang.degreesVector} ${degreesVector}`}</p>
+                            <p>{`${lang.degreeVector} ${degreeVector}`}</p>
                         </div>
                     }
                         <p>{`${lang.leafVector} ${leafVector.length > 0 ? leafVector : lang.emptyLeafVector}`}</p>
-                        <p>{`${lang.multipleEdgesExistence} ${isMultigraph ? lang.yes : lang.no}`}</p>
-                        <p>{`${lang.loopExistence} ${isGraphFaked ? lang.yes : lang.no}`}</p>
+                        <p>{`${lang.multipleEdgePresence} ${isMultigraph ? lang.yes : lang.no}`}</p>
+                        <p>{`${lang.loopPresence} ${isGraphFaked ? lang.yes : lang.no}`}</p>
                     </div>
                 </div>
             </div>

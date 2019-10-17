@@ -1,0 +1,23 @@
+export const en = {
+    syntaxDataError: "Data input syntax error!",
+    syntaxDistanceLengthError: "The length of the distance must be a number!",
+    distanceLengthBelowZeroError: "The length of the distance must be a positive number!",
+    distanceLengthMoreThenTwentyError: "The maximum distance is 20!",
+    inputFormat: "Input format:",
+    enterAdjacencyList: "Enter adjacency list",
+    enterDistanceLength: "Enter distance length",
+    getResults: "Get results",
+    adjacencyMatrix: "Adjacency matrix",
+    incidenceMatrix: "Incidence matrix",
+    distanceLengthMatrix: "Matrix of distances of length",
+    enclosedDistanceLengthMatrix: "Matrix of enclosed distances of length",
+    outDegreeVector: "Out-degree vector is:",
+    inDegreeVector: "In-degree vector is:",
+    degreeVector: "Degree vector is:",
+    leafVector: "Leaf vector is:",
+    emptyLeafVector: "empty",
+    multipleEdgePresence: "Multiple edges presence:",
+    loopPresence: "Loop presence:",
+    yes: "yes",
+    no: "no"
+};
