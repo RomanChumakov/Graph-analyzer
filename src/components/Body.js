@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import Graph from "react-graph-vis";
-import {ru as lang} from "../languages/russian";
-// import {en as lang} from "../languages/english";
+import {ru} from "../languages/russian";
+import {en} from "../languages/english";
 
 import Table from "./Table.js";
 import {
@@ -36,6 +36,8 @@ function Body(props) {
     const [outDegreeVector, setOutDegreeVector] = useState([]);
     const [leafVector, setLeafVector] = useState([]);
 
+    const [lang, setLang] = useState(ru);
+
     const [graph, setGraph] = useState({
         nodes: [
             { id: 1, label: "A", color: "#00e1ff" },
@@ -61,6 +63,19 @@ function Body(props) {
         height: "250px",
         width: "250px",
     });
+
+    const handleChangeLanguage = e => {
+        switch (e.target.selectedIndex) {
+            case 0: {
+                setLang(ru);
+                break;
+            }
+            case 1: {
+                setLang(en);
+                break;
+            }
+        }
+    };
 
     const handleInputClick = e => {
 
@@ -132,6 +147,10 @@ function Body(props) {
 
     return (
         <div className="main-container">
+            <select style = {{marginTop: "10px"}} onChange = {handleChangeLanguage}>
+                <option value = "ru">Русский</option>
+                <option value = "en">English</option>
+            </select>
             <div style = {{height: "250px", width: "250px", marginTop: "10px"}}>
                 <Graph graph={graph} options={options}/>
             </div>
